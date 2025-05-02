@@ -1,0 +1,13 @@
+AIBookEditor/
+├── main.py                  # Main script for processing documents
+├── contexts/
+│   ├── __init__.py          # Makes the folder a package
+│   ├── prompt_contexts.py   # Contains genre-specific contexts
+├── web/
+│   ├── __init__.py          # Makes the folder a package
+│   ├── server.py            # Flask server logic
+├── utils/
+│   ├── __init__.py          # Makes the folder a package
+│   ├── document_utils.py    # Utility functions for document handling
+├── .gitignore
+└── requirements.txt         # Dependencies (e.g., Flask, docx, tqdm)
