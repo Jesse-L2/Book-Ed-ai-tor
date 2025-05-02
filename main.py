@@ -11,6 +11,8 @@ import json
 import requests
 from tqdm import tqdm
 import time
+import threading
+from web.server import start_server
 from contexts.prompt_contexts import (
     literary_fiction_context, 
     thriller_context, 
@@ -250,18 +252,28 @@ def main():
         chunk_text = "\n\n".join(chunk)
         print(f"\nProcessing chunk {i+1}/{len(chunks)} ({len(chunk)} paragraphs)")
         
-        result = analyze_text_with_ollama(chunk_text, args.model, args.api_url)
-        analysis_results.append(result)
+        result = analyze_text_with_ollama(chunk_text, args.model, args.api_url, additional_context)
+        if result is None:
+            print(f"Warning: Analysis for chunk {i+1} returned None.")
+            analysis_results.append(result)
         
         # Brief pause to avoid overwhelming the API
         if i < len(chunks) - 1:
             time.sleep(1)
     
+    # Start the Flask server to view results
+    start_server(analysis_results, paragraphs)
+
+    # Block the main thread to keep the Flask server running
+    print("Flask server is running. Press Ctrl+C to stop.")
+    threading.Event().wait()  # Keeps the script running indefinitely
+
     # Create and save the improved document
     improved_doc = create_improved_document(doc, paragraphs, analysis_results)
     improved_doc.save(args.output)
     
     print(f"\nAnalysis complete! Improved document saved to: {args.output}")
+    print("View the results at http://localhost:5000")
 
 if __name__ == "__main__":
     main()
