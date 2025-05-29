@@ -187,7 +187,7 @@ def analyze_text_with_ollama(text_chunk: str, model_name: str, api_url: str, add
     Uses Pydantic to validate and parse the response.
     """
     prompt = f"""
-You are a professional book editor. Analyze the following passage for writing quality and marketability. Give constructive, actionable feedback that tightens language, improves clarity and rhythm, and enhances narrative logic, flow, character development, pacing, and plot structure. Preserve the author's voice and intent. Avoid providing unnecessary edits or suggestions that do not directly improve the text, it would be better to just return the original text in those cases.
+You are a professional book editor. Analyze the following passage for writing quality and marketability. Give constructive, actionable feedback that tightens language, improves clarity and rhythm, and enhances narrative logic, flow, character development, pacing, and plot structure. Preserve the author's voice and intent. Avoid providing unnecessary edits or suggestions that do not directly improve the text, it would be better to provide no suggestions to the original text than to provide poor suggestions. 
 
 Additional context: {additional_context}
 
