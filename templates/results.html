@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookAIditor - Analysis Results</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="row">
+          <div class="col-md-8">
+            <h1>BookAIditor</h1>
+            <p class="lead">Writing Analysis Results</p>
+          </div>
+          <div class="col-md-4 text-end">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary"
+              >Analyze Another Document</a
+            >
+          </div>
+        </div>
+      </div>
+
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <div class="assessment">
+        <h2>Overall Assessment</h2>
+        <p>{{ results.overall_assessment }}</p>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Detailed Analysis</h2>
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-outline-primary active"
+            id="detailed-view-btn"
+          >
+            Detailed View
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            id="side-by-side-btn"
+          >
+            Side by Side
+          </button>
+        </div>
+      </div>
+
+      <div id="detailed-view">
+        {% for paragraph in results.paragraphs %}
+        <div class="card paragraph-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Paragraph {{ paragraph.index }}</h5>
+          </div>
+          <div class="card-body">
+            <h6>Original Text</h6>
+            <div class="paragraph-original">{{ paragraph.original }}</div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Issues Identified</h6>
+                {% if paragraph.issues %}
+                <ul class="issues-list">
+                  {% for issue in paragraph.issues %}
+                  <li>{{ issue }}</li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p><em>No issues identified.</em></p>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <h6>Improvement Suggestions</h6>
+                {% if paragraph.suggestions %}
+                <ul class="suggestions-list">
+                  {% for suggestion in paragraph.suggestions %}
+                  <li>{{ suggestion }}</li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p><em>No suggestions provided.</em></p>
+                {% endif %}
+              </div>
+            </div>
+
+            <h6>Improved Version</h6>
+            <div class="paragraph-improved">
+              {{ paragraph.improved_version }}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="side-by-side" class="side-by-side">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-stretch">
+              <div class="col-1 text-center text-muted vertical-divider"></div>
+              <div class="col">Original Text</div>
+              <div class="col">Improved Version</div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            {% for paragraph in results.paragraphs %}
+            <div class="row m-0 align-items-stretch">
+              <div class="col-1 text-center text-muted vertical-divider" style="font-size: 0.9em;">
+                {{ paragraph.index }}
+              </div>
+              <div class="col">{{ paragraph.original }}</div>
+              <div class="col">{{ paragraph.improved_version }}</div>
+            </div>
+            {% if not loop.last %}
+            <hr class="m-0" />
+            {% endif %} {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+        <a href="{{ url_for('index') }}" class="btn btn-primary"
+          >Analyze Another Document</a
+        >
+      </div>
+
+      <div class="footer">
+        <p>BookAIditor - AI-Powered Writing Improvement Tool</p>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const detailedViewBtn = document.getElementById("detailed-view-btn");
+        const sideBySideBtn = document.getElementById("side-by-side-btn");
+        const detailedView = document.getElementById("detailed-view");
+        const sideBySideView = document.getElementById("side-by-side");
+
+        detailedViewBtn.addEventListener("click", function () {
+          detailedView.style.display = "block";
+          sideBySideView.style.display = "none";
+          detailedViewBtn.classList.add("active");
+          sideBySideBtn.classList.remove("active");
+        });
+
+        sideBySideBtn.addEventListener("click", function () {
+          detailedView.style.display = "none";
+          sideBySideView.style.display = "block";
+          detailedViewBtn.classList.remove("active");
+          sideBySideBtn.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

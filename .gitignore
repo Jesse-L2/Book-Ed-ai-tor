@@ -10,8 +10,9 @@ wheels/
 .venv
 venv
 
-# Ignore Word documents
+# Ignore File type documents
 *.docx
-
-# Ignore PDF files
 *.pdf
+
+uploads/*
+!uploads/.gitkeep
